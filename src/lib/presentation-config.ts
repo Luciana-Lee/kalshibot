@@ -1,4 +1,4 @@
-export type SourceKey = 'jpmMarkets' | 'isgOutlook' | 'msGic' | 'gsKickstart'
+export type SourceKey = 'jpmMarkets' | 'jpmView' | 'isgOutlook' | 'msGic' | 'gsKickstart'
 
 export interface SlideSpec {
   source: SourceKey
@@ -21,6 +21,7 @@ export const VALOR_GRAY  = 'F2F2EF'
 
 export const SOURCE_LABELS: Record<SourceKey, string> = {
   jpmMarkets:  'J.P. Morgan Asset Management — Guide to the Markets',
+    jpmView:     'J.P. Morgan — Markets Daily / Investment Outlook',
   isgOutlook:  'Goldman Sachs Investment Strategy Group — 2026 Outlook',
   msGic:       'Morgan Stanley Global Investment Committee Weekly',
   gsKickstart: 'Goldman Sachs — US Weekly Kickstart',
@@ -28,6 +29,7 @@ export const SOURCE_LABELS: Record<SourceKey, string> = {
 
 export const SOURCE_PATTERNS: Record<SourceKey, RegExp[]> = {
   jpmMarkets:  [/guide.to.the.market/i, /gtmus/i, /jpm.*market/i],
+    jpmView:     [/jpm.*view/i, /markets.daily/i, /jpm.*outlook/i],
   isgOutlook:  [/isg/i, /goldman.*outlook/i, /2026.*outlook/i],
   msGic:       [/morgan.stanley/i, /ms.*gic/i, /gic.*weekly/i],
   gsKickstart: [/kickstart/i, /gs.*weekly/i],
