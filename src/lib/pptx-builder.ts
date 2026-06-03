@@ -5,6 +5,7 @@ import type { SlideSpec } from './presentation-config'
 export interface RenderedSlide extends SlideSpec {
   dataUrl: string
   available: boolean
+  summary?: string[]
 }
 
 interface SectionResult {
@@ -148,11 +149,28 @@ function addContentSlide(pptx: PptxGenJS, rendered: RenderedSlide, sectionTitle:
     fontSize: 7, color: VALOR_GOLD, align: 'right', fontFace: 'Calibri', bold: true,
   })
   if (rendered.available) {
-    slide.addImage({
-      data: rendered.dataUrl,
-      x: '0.5%', y: '7.5%', w: '99%', h: '83%',
-      sizing: { type: 'contain', w: '99%', h: '83%' },
-    })
+        if (rendered.summary && rendered.summary.length > 0) {
+      slide.addImage({
+        data: rendered.dataUrl,
+        x: '0.5%', y: '7.5%', w: '62%', h: '83%',
+        sizing: { type: 'contain', w: '62%', h: '83%' },
+      })
+      slide.addShape('rect' as any, {
+        x: '63%', y: '7.5%', w: '36%', h: '83%',
+        fill: { color: VALOR_NAVY }, line: { color: VALOR_NAVY },
+      })
+      slide.addText(rendered.summary.map((b) => '  ' + b).join('\n\n'), {
+        x: '64%', y: '10%', w: '34%', h: '78%',
+        fontSize: 11, color: 'FFFFFF', fontFace: 'Calibri', valign: 'top',
+        bullet: { type: 'bullet', code: '2022', color: VALOR_GOLD },
+      })
+    } else {
+      slide.addImage({
+        data: rendered.dataUrl,
+        x: '0.5%', y: '7.5%', w: '99%', h: '83%',
+        sizing: { type: 'contain', w: '99%', h: '83%' },
+      })
+    }
   } else {
     slide.addShape('rect' as any, {
       x: '10%', y: '20%', w: '80%', h: '55%',
