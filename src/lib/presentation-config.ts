@@ -21,7 +21,7 @@ export const VALOR_GRAY  = 'F2F2EF'
 
 export const SOURCE_LABELS: Record<SourceKey, string> = {
   jpmMarkets:  'J.P. Morgan Asset Management — Guide to the Markets',
-    jpmView:     'J.P. Morgan — Markets Daily / Investment Outlook',
+    jpmView:     'J.P. Morgan — The J.P. Morgan View',
   isgOutlook:  'Goldman Sachs Investment Strategy Group — 2026 Outlook',
   msGic:       'Morgan Stanley Global Investment Committee Weekly',
   gsKickstart: 'Goldman Sachs — US Weekly Kickstart',
