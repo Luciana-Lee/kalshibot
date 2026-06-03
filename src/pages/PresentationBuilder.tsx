@@ -176,7 +176,7 @@ export default function PresentationBuilder() {
     return `Week of ${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
   })
   const [error, setError] = useState<string | null>(null)
-
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('valor_api_key') || '')
   const SOURCE_KEYS = Object.keys(SOURCE_LABELS) as SourceKey[]
 
   const handleFile = useCallback(async (key: SourceKey, file: File) => {
@@ -243,8 +243,8 @@ export default function PresentationBuilder() {
           }
                    try {
             const dataUrl = await renderPageToDataUrl(doc.pdf, spec.page, 2.0)
-            const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || ''
-            let summary: string[] = []
+            if (key) {
+              try { summary = await summarizeSlide(dataUrl, spec.label, key) } catch { summary = [] }            let summary: string[] = []
             if (apiKey) {
               try { summary = await summarizeSlide(dataUrl, spec.label, apiKey) } catch { summary = [] }
             }
@@ -297,6 +297,16 @@ export default function PresentationBuilder() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Presentation Details</h2>
           <div className="flex items-center gap-4">
+                        <label className="text-sm font-medium text-slate-600 w-32">API Key</label>
+            <input
+              className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 font-mono"
+              value={apiKey}
+              onChange={(e) => { setApiKey(e.target.value); localStorage.setItem('valor_api_key', e.target.value) }}
+              placeholder="sk-ant-..."
+              type="password"
+            />
+          </div>
+          <div className="flex items-center gap-4 mt-3">
             <label className="text-sm font-medium text-slate-600 w-32">Week Label</label>
             <input
               className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
