@@ -5,6 +5,7 @@ import { loadPdf, renderPageToDataUrl, getPdfPageCount } from '@/lib/pdf-extract
 import { buildPresentation } from '@/lib/pptx-builder'
 import type { RenderedSlide } from '@/lib/pptx-builder'
 import * as pdfjsLib from 'pdfjs-dist'
+import { summarizeSlide } from '@/lib/ai-summarizer'
 
 type UploadState = 'idle' | 'loading' | 'ready' | 'error'
 
@@ -240,11 +241,16 @@ export default function PresentationBuilder() {
             rendered.push({ ...spec, dataUrl: '', pageWidth: 0, pageHeight: 0, available: false })
             continue
           }
-          try {
+                   try {
             const dataUrl = await renderPageToDataUrl(doc.pdf, spec.page, 2.0)
-            rendered.push({ ...spec, dataUrl, pageWidth: 0, pageHeight: 0, available: true })
+            const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || ''
+            let summary: string[] = []
+            if (apiKey) {
+              try { summary = await summarizeSlide(dataUrl, spec.label, apiKey) } catch { summary = [] }
+            }
+            rendered.push({ ...spec, dataUrl, available: true, summary })
           } catch {
-            rendered.push({ ...spec, dataUrl: '', pageWidth: 0, pageHeight: 0, available: false })
+            rendered.push({ ...spec, dataUrl: '', available: false })
           }
         }
 
